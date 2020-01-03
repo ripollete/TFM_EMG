@@ -1,0 +1,290 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="DatabaseModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="people">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="nvarchar(max)" />
+          <Property Name="surnames" Type="nvarchar(max)" />
+          <Property Name="birth_date" Type="date" />
+          <Property Name="gender" Type="int" />
+          <Property Name="weight" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="height" Type="int" />
+        </EntityType>
+        <EntityType Name="sample">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="id_person" Type="int" Nullable="false" />
+          <Property Name="signal_type" Type="int" Nullable="false" />
+          <Property Name="acquisition_date" Type="datetime" Nullable="false" />
+          <Property Name="frequency" Type="int" Nullable="false" />
+          <Property Name="unit" Type="nchar" MaxLength="10" Nullable="false" />
+        </EntityType>
+        <EntityType Name="sample_data">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="id_sample" Type="int" Nullable="false" />
+          <Property Name="order" Type="int" Nullable="false" />
+          <Property Name="A0" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="olimex_count" Type="int" />
+        </EntityType>
+        <EntityType Name="signal_type">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="type" Type="nchar" MaxLength="1" />
+          <Property Name="samples" Type="nvarchar(max)" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_sample_data_Tosample">
+          <End Role="sample" Type="Self.sample" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="sample_data" Type="Self.sample_data" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="sample">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="sample_data">
+              <PropertyRef Name="id_sample" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_sample_ToPeople">
+          <End Role="people" Type="Self.people" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="sample" Type="Self.sample" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="people">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="sample">
+              <PropertyRef Name="id_person" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_sample_TosignalType">
+          <End Role="signal_type" Type="Self.signal_type" Multiplicity="1" />
+          <End Role="sample" Type="Self.sample" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="signal_type">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="sample">
+              <PropertyRef Name="signal_type" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="DatabaseModelStoreContainer">
+          <EntitySet Name="people" EntityType="Self.people" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="sample" EntityType="Self.sample" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="sample_data" EntityType="Self.sample_data" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="signal_type" EntityType="Self.signal_type" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_sample_data_Tosample" Association="Self.FK_sample_data_Tosample">
+            <End Role="sample" EntitySet="sample" />
+            <End Role="sample_data" EntitySet="sample_data" />
+          </AssociationSet>
+          <AssociationSet Name="FK_sample_ToPeople" Association="Self.FK_sample_ToPeople">
+            <End Role="people" EntitySet="people" />
+            <End Role="sample" EntitySet="sample" />
+          </AssociationSet>
+          <AssociationSet Name="FK_sample_TosignalType" Association="Self.FK_sample_TosignalType">
+            <End Role="signal_type" EntitySet="signal_type" />
+            <End Role="sample" EntitySet="sample" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="DatabaseModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="DatabaseEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="sample" EntityType="DatabaseModel.sample" />
+          <EntitySet Name="people" EntityType="DatabaseModel.people" />
+          <AssociationSet Name="FK_sample_ToPeople" Association="DatabaseModel.FK_sample_ToPeople">
+            <End Role="people" EntitySet="people" />
+            <End Role="sample" EntitySet="sample" />
+          </AssociationSet>
+          <EntitySet Name="signal_type" EntityType="DatabaseModel.signal_type" />
+          <AssociationSet Name="FK_sample_TosignalType" Association="DatabaseModel.FK_sample_TosignalType">
+            <End Role="signal_type" EntitySet="signal_type" />
+            <End Role="sample" EntitySet="sample" />
+          </AssociationSet>
+          <EntitySet Name="sample_data" EntityType="DatabaseModel.sample_data" />
+          <AssociationSet Name="FK_sample_data_Tosample" Association="DatabaseModel.FK_sample_data_Tosample">
+            <End Role="sample" EntitySet="sample" />
+            <End Role="sample_data" EntitySet="sample_data" />
+          </AssociationSet>
+          </EntityContainer>
+        <EntityType Name="sample">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="id_person" Type="Int32" Nullable="false" />
+          <Property Name="signal_type" Type="Int32" Nullable="false" />
+          <Property Name="acquisition_date" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="frequency" Type="Int32" Nullable="false" />
+          <Property Name="unit" Type="String" Nullable="false" MaxLength="10" FixedLength="true" Unicode="true" />
+          <NavigationProperty Name="people" Relationship="DatabaseModel.FK_sample_ToPeople" FromRole="sample" ToRole="people" />
+          <NavigationProperty Name="signal_type1" Relationship="DatabaseModel.FK_sample_TosignalType" FromRole="sample" ToRole="signal_type" />
+          <NavigationProperty Name="sample_data" Relationship="DatabaseModel.FK_sample_data_Tosample" FromRole="sample" ToRole="sample_data" />
+        </EntityType>
+        <EntityType Name="people">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="surnames" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="birth_date" Type="DateTime" Precision="0" />
+          <Property Name="gender" Type="Int32" />
+          <Property Name="weight" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="height" Type="Int32" />
+          <NavigationProperty Name="sample" Relationship="DatabaseModel.FK_sample_ToPeople" FromRole="people" ToRole="sample" />
+        </EntityType>
+        <Association Name="FK_sample_ToPeople">
+          <End Type="DatabaseModel.people" Role="people" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="DatabaseModel.sample" Role="sample" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="people">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="sample">
+              <PropertyRef Name="id_person" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="signal_type">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="type" Type="String" MaxLength="1" FixedLength="true" Unicode="true" />
+          <Property Name="samples" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="sample" Relationship="DatabaseModel.FK_sample_TosignalType" FromRole="signal_type" ToRole="sample" />
+        </EntityType>
+        <Association Name="FK_sample_TosignalType">
+          <End Type="DatabaseModel.signal_type" Role="signal_type" Multiplicity="1" />
+          <End Type="DatabaseModel.sample" Role="sample" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="signal_type">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="sample">
+              <PropertyRef Name="signal_type" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="sample_data">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="id_sample" Type="Int32" Nullable="false" />
+          <Property Name="order" Type="Int32" Nullable="false" />
+          <Property Name="A0" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="olimex_count" Type="Int32" />
+          <NavigationProperty Name="sample" Relationship="DatabaseModel.FK_sample_data_Tosample" FromRole="sample_data" ToRole="sample" />
+        </EntityType>
+        <Association Name="FK_sample_data_Tosample">
+          <End Type="DatabaseModel.sample" Role="sample" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="DatabaseModel.sample_data" Role="sample_data" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="sample">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="sample_data">
+              <PropertyRef Name="id_sample" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="DatabaseModelStoreContainer" CdmEntityContainer="DatabaseEntities">
+          <EntitySetMapping Name="sample">
+            <EntityTypeMapping TypeName="DatabaseModel.sample">
+              <MappingFragment StoreEntitySet="sample">
+                <ScalarProperty Name="unit" ColumnName="unit" />
+                <ScalarProperty Name="frequency" ColumnName="frequency" />
+                <ScalarProperty Name="acquisition_date" ColumnName="acquisition_date" />
+                <ScalarProperty Name="signal_type" ColumnName="signal_type" />
+                <ScalarProperty Name="id_person" ColumnName="id_person" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="people">
+            <EntityTypeMapping TypeName="DatabaseModel.people">
+              <MappingFragment StoreEntitySet="people">
+                <ScalarProperty Name="height" ColumnName="height" />
+                <ScalarProperty Name="weight" ColumnName="weight" />
+                <ScalarProperty Name="gender" ColumnName="gender" />
+                <ScalarProperty Name="birth_date" ColumnName="birth_date" />
+                <ScalarProperty Name="surnames" ColumnName="surnames" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="signal_type">
+            <EntityTypeMapping TypeName="DatabaseModel.signal_type">
+              <MappingFragment StoreEntitySet="signal_type">
+                <ScalarProperty Name="samples" ColumnName="samples" />
+                <ScalarProperty Name="type" ColumnName="type" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="sample_data">
+            <EntityTypeMapping TypeName="DatabaseModel.sample_data">
+              <MappingFragment StoreEntitySet="sample_data">
+                <ScalarProperty Name="olimex_count" ColumnName="olimex_count" />
+                <ScalarProperty Name="A0" ColumnName="A0" />
+                <ScalarProperty Name="order" ColumnName="order" />
+                <ScalarProperty Name="id_sample" ColumnName="id_sample" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="Ninguno" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
